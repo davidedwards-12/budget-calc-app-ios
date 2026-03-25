@@ -7,13 +7,20 @@ struct DashboardView: View {
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
 
     @State private var selectedMonth = Date()
+    @State private var selectedAccount = "All Accounts"
     private let calendar = Calendar.current
+
+    private var availableAccounts: [String] {
+        let names = Set(transactions.map(\.accountName)).filter { !$0.isEmpty }
+        return ["All Accounts"] + names.sorted()
+    }
 
     // MARK: - Computed
 
     private var monthTransactions: [Transaction] {
         transactions.filter {
-            calendar.isDate($0.date, equalTo: selectedMonth, toGranularity: .month)
+            calendar.isDate($0.date, equalTo: selectedMonth, toGranularity: .month) &&
+            (selectedAccount == "All Accounts" || $0.accountName == selectedAccount)
         }
     }
 
@@ -34,9 +41,19 @@ struct DashboardView: View {
 
     private var categoryBreakdown: [(name: String, total: Double, color: Color)] {
         var map: [String: (Double, Color)] = [:]
-        for t in monthTransactions where t.isExpense {
-            let name  = t.category?.name ?? "Uncategorized"
-            let color = t.category?.color ?? Color(.systemGray)
+        for t in monthTransactions {
+            let name: String
+            let color: Color
+            if let cat = t.category {
+                name  = cat.name
+                color = cat.color
+            } else if t.isIncome {
+                name  = "Income"
+                color = .green
+            } else {
+                name  = "Uncategorized"
+                color = Color(.systemGray)
+            }
             map[name, default: (0, color)].0 += t.absoluteAmount
         }
         return map.map { ($0.key, $0.value.0, $0.value.1) }
@@ -50,6 +67,12 @@ struct DashboardView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     monthPicker
+                    if availableAccounts.count > 1 && availableAccounts.count <= 4 {
+                        Picker("Account", selection: $selectedAccount) {
+                            ForEach(availableAccounts, id: \.self) { Text($0) }
+                        }
+                        .pickerStyle(.segmented)
+                    }
                     summaryCards
                     if categoryBreakdown.isEmpty {
                         emptyState
@@ -60,6 +83,21 @@ struct DashboardView: View {
                 .padding()
             }
             .navigationTitle("Dashboard")
+            .toolbar {
+                if availableAccounts.count > 2 {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Picker("Account", selection: $selectedAccount) {
+                                ForEach(availableAccounts, id: \.self) { Text($0) }
+                            }
+                        } label: {
+                            Label(selectedAccount == "All Accounts" ? "All Accounts" : selectedAccount,
+                                  systemImage: "building.columns")
+                                .labelStyle(.titleAndIcon)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -96,7 +134,7 @@ struct DashboardView: View {
 
     private var spendingBreakdown: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Spending by Category")
+            Text("Breakdown by Category")
                 .font(.headline)
 
             // Donut chart

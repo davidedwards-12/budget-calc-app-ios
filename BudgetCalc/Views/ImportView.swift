@@ -8,7 +8,8 @@ struct ImportView: View {
 
     @State private var bankName = ""
     @State private var isPickerPresented = false
-    @State private var parsed: [ParsedTransaction] = []
+    @State private var parsedAccounts: [ParsedAccount] = []
+    @State private var selectedAccounts: Set<String> = []
     @State private var errorMessage: String?
     @State private var showSuccess = false
     @State private var importedCount = 0
@@ -19,8 +20,8 @@ struct ImportView: View {
                 VStack(spacing: 20) {
                     importCard
 
-                    if !parsed.isEmpty {
-                        previewCard
+                    if !parsedAccounts.isEmpty {
+                        accountSelectionCard
                     }
 
                     Spacer()
@@ -84,50 +85,42 @@ struct ImportView: View {
     }
 
     @ViewBuilder
-    private var previewCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+    private var accountSelectionCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Preview")
+                    Text("Accounts Found")
                         .font(.headline)
-                    Text("\(parsed.count) transactions found")
+                    Text("Select which accounts to import")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button("Import All") {
-                    saveTransactions()
+                Button("Import Selected") {
+                    saveSelectedTransactions()
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(selectedAccounts.isEmpty)
             }
 
             Divider()
 
-            ForEach(parsed.prefix(8)) { t in
-                HStack {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(t.description)
-                            .lineLimit(1)
-                            .font(.subheadline)
-                        Text(t.date, style: .date)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+            ForEach(parsedAccounts) { account in
+                AccountToggleRow(
+                    account: account,
+                    isSelected: selectedAccounts.contains(account.name)
+                ) {
+                    if selectedAccounts.contains(account.name) {
+                        selectedAccounts.remove(account.name)
+                    } else {
+                        selectedAccounts.insert(account.name)
                     }
-                    Spacer()
-                    Text(t.amount, format: .currency(code: "USD"))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(t.amount >= 0 ? .green : .primary)
                 }
             }
 
-            if parsed.count > 8 {
-                Text("+ \(parsed.count - 8) more transactions…")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
             Button(role: .destructive) {
-                parsed = []
+                parsedAccounts = []
+                selectedAccounts = []
             } label: {
                 Label("Discard", systemImage: "trash")
                     .font(.subheadline)
@@ -147,33 +140,42 @@ struct ImportView: View {
             let accessed = url.startAccessingSecurityScopedResource()
             defer { if accessed { url.stopAccessingSecurityScopedResource() } }
 
-            let results = PDFParser.extractTransactions(from: url)
-            if results.isEmpty {
+            let accounts = PDFParser.extractAccounts(from: url)
+            if accounts.isEmpty {
                 errorMessage = "No transactions could be found in this PDF.\n\nMake sure the file is a text-based bank statement (not a scanned image)."
             } else {
-                parsed = results
+                parsedAccounts = accounts
+                // Default: select all accounts
+                selectedAccounts = Set(accounts.map(\.name))
             }
         case .failure(let error):
             errorMessage = error.localizedDescription
         }
     }
 
-    private func saveTransactions() {
+    private func saveSelectedTransactions() {
         seedCategoriesIfNeeded()
 
         let bank = bankName.trimmingCharacters(in: .whitespaces)
-        for p in parsed {
-            let t = Transaction(
-                date: p.date,
-                transactionDescription: p.description,
-                amount: p.amount,
-                bankName: bank
-            )
-            modelContext.insert(t)
+        var count = 0
+
+        for account in parsedAccounts where selectedAccounts.contains(account.name) {
+            for p in account.transactions {
+                let t = Transaction(
+                    date: p.date,
+                    transactionDescription: p.description,
+                    amount: p.amount,
+                    bankName: bank,
+                    accountName: p.accountName
+                )
+                modelContext.insert(t)
+                count += 1
+            }
         }
 
-        importedCount = parsed.count
-        parsed = []
+        importedCount = count
+        parsedAccounts = []
+        selectedAccounts = []
         showSuccess = true
     }
 
@@ -182,5 +184,47 @@ struct ImportView: View {
         for (name, colorHex, icon) in DefaultCategories.all {
             modelContext.insert(Category(name: name, colorHex: colorHex, icon: icon))
         }
+    }
+}
+
+// MARK: - Account Toggle Row
+
+struct AccountToggleRow: View {
+    let account: ParsedAccount
+    let isSelected: Bool
+    let onToggle: () -> Void
+
+    var body: some View {
+        Button(action: onToggle) {
+            HStack(spacing: 12) {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isSelected ? Color.accentColor : Color(.systemGray3))
+                    .font(.title3)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(account.name)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Text("\(account.transactions.count) transactions")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                // Preview first/last date range
+                if let first = account.transactions.map(\.date).min(),
+                   let last  = account.transactions.map(\.date).max() {
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text(first, style: .date)
+                        Text(last, style: .date)
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
     }
 }

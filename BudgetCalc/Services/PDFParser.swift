@@ -6,29 +6,93 @@ struct ParsedTransaction: Identifiable {
     let date: Date
     let description: String
     let amount: Double
+    var accountName: String = ""
+}
+
+struct ParsedAccount: Identifiable {
+    let id = UUID()
+    let name: String
+    let transactions: [ParsedTransaction]
 }
 
 enum PDFParser {
 
-    static func extractTransactions(from url: URL) -> [ParsedTransaction] {
+    /// Primary entry point — returns transactions grouped by account.
+    static func extractAccounts(from url: URL) -> [ParsedAccount] {
         guard let pdf = PDFDocument(url: url) else { return [] }
         var text = ""
         for i in 0..<pdf.pageCount {
             text += (pdf.page(at: i)?.string ?? "") + "\n"
         }
-        return parseTransactions(from: text)
+        return parseAccounts(from: text)
+    }
+
+    /// Flat list — convenience for single-account PDFs.
+    static func extractTransactions(from url: URL) -> [ParsedTransaction] {
+        extractAccounts(from: url).flatMap(\.transactions)
+    }
+
+    static func parseAccounts(from text: String) -> [ParsedAccount] {
+        let joined = joinContinuationLines(text)
+        var accountName = "Default Account"
+        var buckets: [String: [ParsedTransaction]] = [:]
+        var order: [String] = []
+
+        for line in joined.components(separatedBy: .newlines) {
+            // Detect account section headers (e.g. "Primary Share Account: XXXXXXX32372")
+            if let detected = detectAccountName(in: line) {
+                accountName = detected
+                if buckets[accountName] == nil {
+                    order.append(accountName)
+                    buckets[accountName] = []
+                }
+                continue
+            }
+
+            if var t = parseLine(line) {
+                t.accountName = accountName
+                if buckets[accountName] == nil {
+                    order.append(accountName)
+                    buckets[accountName] = []
+                }
+                buckets[accountName]!.append(t)
+            }
+        }
+
+        let result = order.compactMap { name -> ParsedAccount? in
+            let txns = deduplicated(buckets[name] ?? [])
+            guard !txns.isEmpty else { return nil }
+            return ParsedAccount(name: name, transactions: txns)
+        }
+
+        // If nothing was sectioned, fall back to "Default Account"
+        return result.isEmpty ? [] : result
     }
 
     static func parseTransactions(from text: String) -> [ParsedTransaction] {
-        // Join continuation lines (ECU wraps long descriptions onto the next line)
-        let joined = joinContinuationLines(text)
-        var results: [ParsedTransaction] = []
-        for line in joined.components(separatedBy: .newlines) {
-            if let t = parseLine(line) {
-                results.append(t)
-            }
-        }
-        return deduplicated(results)
+        parseAccounts(from: text).flatMap(\.transactions)
+    }
+
+    // MARK: - Account detection
+
+    /// Returns a cleaned account name if the line is a section header like
+    /// "Primary Share Account: XXXXXXX32372" or "Beyond Free Checking Account: XXXXXXX32364 (Continued)".
+    private static func detectAccountName(in line: String) -> String? {
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        guard trimmed.lowercased().contains("account:"), !hasDatePrefix(trimmed) else { return nil }
+
+        var name = trimmed
+        // Remove account numbers (strings of X's followed by digits)
+        name = name.replacingOccurrences(of: #"X+\d+"#, with: "", options: .regularExpression)
+        // Remove "(Continued)"
+        name = name.replacingOccurrences(of: #"\(Continued\)"#, with: "", options: [.regularExpression, .caseInsensitive])
+        // Remove the colon
+        name = name.replacingOccurrences(of: ":", with: "")
+        // Collapse whitespace
+        name = name.replacingOccurrences(of: #"\s{2,}"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespaces)
+
+        return name.isEmpty ? nil : name
     }
 
     // MARK: - Line joining

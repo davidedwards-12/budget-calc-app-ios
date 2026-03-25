@@ -6,14 +6,22 @@ struct TransactionsListView: View {
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
 
     @State private var searchText = ""
+    @State private var selectedAccount = "All Accounts"
     @State private var selectedTransaction: Transaction?
 
+    private var availableAccounts: [String] {
+        let names = Set(transactions.map(\.accountName)).filter { !$0.isEmpty }
+        return ["All Accounts"] + names.sorted()
+    }
+
     private var filtered: [Transaction] {
-        guard !searchText.isEmpty else { return transactions }
-        return transactions.filter {
-            $0.transactionDescription.localizedCaseInsensitiveContains(searchText) ||
-            $0.bankName.localizedCaseInsensitiveContains(searchText) ||
-            ($0.category?.name.localizedCaseInsensitiveContains(searchText) ?? false)
+        transactions.filter { t in
+            let matchesAccount = selectedAccount == "All Accounts" || t.accountName == selectedAccount
+            let matchesSearch = searchText.isEmpty ||
+                t.transactionDescription.localizedCaseInsensitiveContains(searchText) ||
+                t.bankName.localizedCaseInsensitiveContains(searchText) ||
+                (t.category?.name.localizedCaseInsensitiveContains(searchText) ?? false)
+            return matchesAccount && matchesSearch
         }
     }
 
@@ -48,6 +56,32 @@ struct TransactionsListView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Transactions")
             .searchable(text: $searchText, prompt: "Search transactions")
+            .toolbar {
+                if availableAccounts.count > 2 {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Picker("Account", selection: $selectedAccount) {
+                                ForEach(availableAccounts, id: \.self) { Text($0) }
+                            }
+                        } label: {
+                            Label(selectedAccount == "All Accounts" ? "All Accounts" : selectedAccount,
+                                  systemImage: "building.columns")
+                                .labelStyle(.titleAndIcon)
+                        }
+                    }
+                }
+            }
+            .safeAreaInset(edge: .top) {
+                if availableAccounts.count > 1 && availableAccounts.count <= 4 {
+                    Picker("Account", selection: $selectedAccount) {
+                        ForEach(availableAccounts, id: \.self) { Text($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(Color(.systemBackground))
+                }
+            }
             .sheet(item: $selectedTransaction) { t in
                 CategoryPickerView(transaction: t)
             }
@@ -87,6 +121,11 @@ struct TransactionRow: View {
                     Text(transaction.date, style: .date)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    if !transaction.accountName.isEmpty {
+                        Text("· \(transaction.accountName)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                     if let cat = transaction.category {
                         Text("· \(cat.name)")
                             .font(.caption)

@@ -8,14 +8,16 @@ final class Transaction {
     var transactionDescription: String
     var amount: Double
     var bankName: String
+    var accountName: String
     var category: Category?
 
-    init(date: Date, transactionDescription: String, amount: Double, bankName: String) {
+    init(date: Date, transactionDescription: String, amount: Double, bankName: String, accountName: String = "") {
         self.id = UUID()
         self.date = date
         self.transactionDescription = transactionDescription
         self.amount = amount
         self.bankName = bankName
+        self.accountName = accountName
     }
 
     var isExpense: Bool { amount < 0 }
