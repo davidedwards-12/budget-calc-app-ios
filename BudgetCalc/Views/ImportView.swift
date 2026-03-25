@@ -156,10 +156,10 @@ struct ImportView: View {
     private func saveSelectedTransactions() {
         seedCategoriesIfNeeded()
 
-        // Build a name → Category lookup for fast matching
-        let categoryMap: [String: Category] = Dictionary(
-            uniqueKeysWithValues: categories.map { ($0.name, $0) }
-        )
+        // Reads the cateogries from seedCateogriesIfNeeded()
+        let descriptor = FetchDescriptor<Category>()
+        let fetchedCategories = (try? modelContext.fetch(descriptor)) ?? []
+        let categoryMap = Dictionary(uniqueKeysWithValues: fetchedCategories.map { ($0.name, $0) })
 
         let bank = bankName.trimmingCharacters(in: .whitespaces)
         var count = 0
