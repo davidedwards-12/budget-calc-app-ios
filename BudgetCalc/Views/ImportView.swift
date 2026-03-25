@@ -65,7 +65,7 @@ struct ImportView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
 
-            TextField("Bank name (e.g. AMEX, ECU)", text: $bankName)
+            TextField("Bank name (e.g. AMEX, Chase, Citi, etc.)", text: $bankName)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
 
@@ -156,6 +156,11 @@ struct ImportView: View {
     private func saveSelectedTransactions() {
         seedCategoriesIfNeeded()
 
+        // Build a name → Category lookup for fast matching
+        let categoryMap: [String: Category] = Dictionary(
+            uniqueKeysWithValues: categories.map { ($0.name, $0) }
+        )
+
         let bank = bankName.trimmingCharacters(in: .whitespaces)
         var count = 0
 
@@ -168,6 +173,11 @@ struct ImportView: View {
                     bankName: bank,
                     accountName: p.accountName
                 )
+                // Auto-categorize — user can still override later
+                if let matchedName = AutoCategorizer.categorize(description: p.description, amount: p.amount),
+                   let category = categoryMap[matchedName] {
+                    t.category = category
+                }
                 modelContext.insert(t)
                 count += 1
             }

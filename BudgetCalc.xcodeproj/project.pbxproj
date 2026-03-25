@@ -15,6 +15,7 @@
 		78D5844248CCA66D4603D1B7 /* TransactionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD056E52B01B21E9F7F71F4F /* TransactionsListView.swift */; };
 		7A1E341D27D0905C023E5FD7 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30386BB2C550EBADE27B80CC /* DashboardView.swift */; };
 		8A9D53660C51133D0E7BB982 /* PDFParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFDDE378FE33E3B34021AAF1 /* PDFParser.swift */; };
+		B3F21A44C9D05E110A7CC001 /* AutoCategorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F21A44C9D05E110A7CC002 /* AutoCategorizer.swift */; };
 		947FE702F21A050B81240295 /* BudgetCalcApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0E0B467B9EE56DA3A8280E9 /* BudgetCalcApp.swift */; };
 		C21C04D49EDC1363B1C30690 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB136B2DBB75FE67543CB90C /* Assets.xcassets */; };
 		FD9B7F9D94ADFCA1017B27F1 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68C087401F0710CE4398BB5 /* ImportView.swift */; };
@@ -33,6 +34,7 @@
 		DB136B2DBB75FE67543CB90C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DD056E52B01B21E9F7F71F4F /* TransactionsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsListView.swift; sourceTree = "<group>"; };
 		EFDDE378FE33E3B34021AAF1 /* PDFParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFParser.swift; sourceTree = "<group>"; };
+		B3F21A44C9D05E110A7CC002 /* AutoCategorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoCategorizer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				EFDDE378FE33E3B34021AAF1 /* PDFParser.swift */,
+				B3F21A44C9D05E110A7CC002 /* AutoCategorizer.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -191,6 +194,7 @@
 				FD9B7F9D94ADFCA1017B27F1 /* ImportView.swift in Sources */,
 				2DB18050F57631332A60ACCA /* CategoryPickerView.swift in Sources */,
 				8A9D53660C51133D0E7BB982 /* PDFParser.swift in Sources */,
+				B3F21A44C9D05E110A7CC001 /* AutoCategorizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
