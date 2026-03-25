@@ -4,6 +4,16 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
 
 ---
 
+## Screenshots
+
+<p float="left">
+  <img src="Screenshots/budgetcalc_dashboard.png" width="30%" />
+  <img src="Screenshots/budgetcalc_transactions.png" width="30%" />
+  <img src="Screenshots/budgetcalc_import.png" width="30%" />
+</p>
+
+---
+
 ## Features
 
 - **PDF Import** — Import bank statements from any bank (ECU, AMEX, Chase, etc.)
@@ -98,15 +108,23 @@ All data is stored **on-device** using SwiftData. Nothing is sent to any server.
 ```
 BudgetCalc/
 ├── Models/
-│   ├── Transaction.swift       # SwiftData model for a single transaction
-│   └── Category.swift          # SwiftData model + default category seeds
+│   ├── Transaction.swift           # SwiftData model for a single transaction
+│   └── Category.swift              # SwiftData model + default category seeds
 ├── Services/
-│   ├── PDFParser.swift         # PDF text extraction + transaction parsing
-│   └── AutoCategorizer.swift   # Keyword-based auto-categorization engine
+│   ├── PDFParser.swift             # PDF text extraction + transaction parsing
+│   └── AutoCategorizer.swift       # Keyword-based auto-categorization engine
 ├── Views/
-│   ├── DashboardView.swift     # Summary cards + breakdown by category chart
+│   ├── DashboardView.swift         # Summary cards + breakdown by category chart
 │   ├── TransactionsListView.swift  # Full transaction list with category picker
-│   ├── ImportView.swift        # PDF import flow + account selection
+│   ├── ImportView.swift            # PDF import flow + account selection
 │   └── CategoryPickerView.swift    # Sheet for manually tagging a transaction
-└── ContentView.swift           # Tab bar root
+└── ContentView.swift               # Tab bar root
+
+Screenshots/
+├── budgetcalc_dashboard.png
+├── budgetcalc_transactions.png
+└── budgetcalc_import.png
+
+Scripts/
+└── generate_fake_statement.py      # Generates a fake ECU-style PDF for testing
 ```
