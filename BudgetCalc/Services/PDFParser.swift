@@ -191,6 +191,12 @@ enum PDFParser {
                     var c = Calendar.current.dateComponents([.month, .day], from: d)
                     c.year = currentYear
                     d = Calendar.current.date(from: c) ?? d
+                    // If the date is in the future it belongs to the previous year
+                    // (e.g. importing a December 2025 statement in 2026)
+                    if d > Date() {
+                        c.year = currentYear - 1
+                        d = Calendar.current.date(from: c) ?? d
+                    }
                 }
                 return d
             }
