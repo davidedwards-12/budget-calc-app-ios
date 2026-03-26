@@ -165,6 +165,12 @@ struct DashboardView: View {
                     .font(.subheadline)
                 }
             }
+            
+            NavigationLink("View Monthly Details →") {
+                DetailsView(month: selectedMonth, account: selectedAccount)
+            }
+            .font(.subheadline)
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding()
         .background(Color(.secondarySystemBackground))
