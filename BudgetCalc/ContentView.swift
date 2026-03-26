@@ -1,20 +1,25 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @State private var selectedTab = 0
+
     var body: some View {
-        TabView {
-            DashboardView()
-                .tabItem {
-                    Label("Dashboard", systemImage: "chart.pie.fill")
-                }
+        TabView(selection: $selectedTab) {
+            DashboardView(selectedTab: $selectedTab)
+                .tabItem { Label("Dashboard", systemImage: "chart.pie.fill") }
+                .tag(0)
+
             TransactionsListView()
-                .tabItem {
-                    Label("Transactions", systemImage: "list.bullet")
-                }
+                .tabItem { Label("Transactions", systemImage: "list.bullet") }
+                .tag(1)
+
             ImportView()
-                .tabItem {
-                    Label("Import", systemImage: "square.and.arrow.down")
-                }
+                .tabItem { Label("Import", systemImage: "square.and.arrow.down") }
+                .tag(2)
+        }
+        .sheet(isPresented: .constant(!hasSeenOnboarding)) {
+            OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
         }
     }
 }
