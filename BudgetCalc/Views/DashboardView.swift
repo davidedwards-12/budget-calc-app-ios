@@ -3,6 +3,7 @@ import SwiftData
 import Charts
 
 struct DashboardView: View {
+    @Binding var selectedTab: Int
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
 
@@ -178,20 +179,41 @@ struct DashboardView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "chart.pie")
-                .font(.system(size: 48))
-                .foregroundStyle(.secondary)
-            Text("No data for this month")
-                .font(.headline)
-                .foregroundStyle(.secondary)
-            Text("Import a bank statement to get started.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+        VStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(Color(.systemGray5))
+                    .frame(width: 80, height: 80)
+                Image(systemName: "chart.pie")
+                    .font(.system(size: 36))
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(spacing: 6) {
+                Text("No data for this month")
+                    .font(.headline)
+                Text("Import a bank statement PDF to see your spending breakdown, income, and savings rate.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+
+            Button {
+                selectedTab = 2
+            } label: {
+                Label("Import a Statement", systemImage: "square.and.arrow.down")
+                    .font(.subheadline.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color.accentColor)
+                    .foregroundStyle(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .padding(.top, 4)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 48)
+        .padding(.vertical, 32)
+        .padding(.horizontal, 8)
     }
 
     // MARK: - Helpers
