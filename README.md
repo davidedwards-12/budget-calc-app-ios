@@ -18,7 +18,7 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
 
 <p float="left">
   <img src="Screenshots/BudgetCalc_DashboardHome.png" width="23%" />
-  <img src="Screenshots/BudgetCalc_Transactions.png" width="23%" />
+  <img src="Screenshots/budgetcalc_transactions.png" width="23%" />
   <img src="Screenshots/BudgetCalc_DetailedScreen.png" width="23%" />
   <img src="Screenshots/budgetcalc_import.png" width="23%" />
 </p>
