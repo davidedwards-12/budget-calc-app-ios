@@ -13,6 +13,7 @@ struct ImportView: View {
     @State private var errorMessage: String?
     @State private var showSuccess = false
     @State private var importedCount = 0
+    @State private var skippedCount = 0
 
     var body: some View {
         NavigationStack {
@@ -44,7 +45,9 @@ struct ImportView: View {
             .alert("Import Complete", isPresented: $showSuccess) {
                 Button("OK") {}
             } message: {
-                Text("\(importedCount) transactions imported from \(bankName).")
+                Text(skippedCount > 0
+                     ? "\(importedCount) transactions imported from \(bankName). \(skippedCount) duplicates were skipped."
+                     : "\(importedCount) transactions imported from \(bankName).")
             }
         }
     }
@@ -156,13 +159,19 @@ struct ImportView: View {
     private func saveSelectedTransactions() {
         seedCategoriesIfNeeded()
 
-        // Reads the cateogries from seedCateogriesIfNeeded()
-        let descriptor = FetchDescriptor<Category>()
-        let fetchedCategories = (try? modelContext.fetch(descriptor)) ?? []
+        // Fetch categories synchronously (avoids @Query timing issue on first import)
+        let categoryDescriptor = FetchDescriptor<Category>()
+        let fetchedCategories = (try? modelContext.fetch(categoryDescriptor)) ?? []
         let categoryMap = Dictionary(uniqueKeysWithValues: fetchedCategories.map { ($0.name, $0) })
+
+        // Build a fingerprint set from all existing transactions for duplicate detection
+        let existingDescriptor = FetchDescriptor<Transaction>()
+        let existingTransactions = (try? modelContext.fetch(existingDescriptor)) ?? []
+        let existingFingerprints = Set(existingTransactions.map { fingerprint(for: $0) })
 
         let bank = bankName.trimmingCharacters(in: .whitespaces)
         var count = 0
+        var skipped = 0
 
         for account in parsedAccounts where selectedAccounts.contains(account.name) {
             for p in account.transactions {
@@ -173,6 +182,13 @@ struct ImportView: View {
                     bankName: bank,
                     accountName: p.accountName
                 )
+
+                // Skip if a matching transaction already exists
+                guard !existingFingerprints.contains(fingerprint(for: t)) else {
+                    skipped += 1
+                    continue
+                }
+
                 // Auto-categorize — user can still override later
                 if let matchedName = AutoCategorizer.categorize(description: p.description, amount: p.amount),
                    let category = categoryMap[matchedName] {
@@ -184,9 +200,18 @@ struct ImportView: View {
         }
 
         importedCount = count
+        skippedCount = skipped
         parsedAccounts = []
         selectedAccounts = []
         showSuccess = true
+    }
+
+    /// A string that uniquely identifies a transaction for duplicate detection.
+    /// Uses date (day precision) + amount + first 30 chars of description + account name.
+    private func fingerprint(for t: Transaction) -> String {
+        let day = Calendar.current.startOfDay(for: t.date)
+        let desc = String(t.transactionDescription.prefix(30))
+        return "\(day)-\(t.amount)-\(desc)-\(t.accountName)"
     }
 
     private func seedCategoriesIfNeeded() {

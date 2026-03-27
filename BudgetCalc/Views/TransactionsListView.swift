@@ -8,6 +8,7 @@ struct TransactionsListView: View {
     @State private var searchText = ""
     @State private var selectedAccount = "All Accounts"
     @State private var selectedTransaction: Transaction?
+    @State private var groupPendingDelete: (key: String, value: [Transaction])?
 
     private var availableAccounts: [String] {
         let names = Set(transactions.map(\.accountName)).filter { !$0.isEmpty }
@@ -40,8 +41,19 @@ struct TransactionsListView: View {
     var body: some View {
         NavigationStack {
             List {
+                if availableAccounts.count > 1 && availableAccounts.count <= 4 {
+                    Section {
+                        Picker("Account", selection: $selectedAccount) {
+                            ForEach(availableAccounts, id: \.self) { Text($0) }
+                        }
+                        .pickerStyle(.segmented)
+                    }
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                }
+
                 ForEach(grouped, id: \.key) { group in
-                    Section(group.key) {
+                    Section {
                         ForEach(group.value) { transaction in
                             TransactionRow(transaction: transaction)
                                 .contentShape(Rectangle())
@@ -49,6 +61,16 @@ struct TransactionsListView: View {
                         }
                         .onDelete { offsets in
                             for i in offsets { modelContext.delete(group.value[i]) }
+                        }
+                    } header: {
+                        HStack {
+                            Text(group.key)
+                            Spacer()
+                            Button("Delete") {
+                                groupPendingDelete = group
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.red)
                         }
                     }
                 }
@@ -71,19 +93,24 @@ struct TransactionsListView: View {
                     }
                 }
             }
-            .safeAreaInset(edge: .top) {
-                if availableAccounts.count > 1 && availableAccounts.count <= 4 {
-                    Picker("Account", selection: $selectedAccount) {
-                        ForEach(availableAccounts, id: \.self) { Text($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                    .background(Color(.systemBackground))
-                }
-            }
             .sheet(item: $selectedTransaction) { t in
                 CategoryPickerView(transaction: t)
+            }
+            .alert(
+                "Delete \(groupPendingDelete?.key ?? "") Transactions?",
+                isPresented: .constant(groupPendingDelete != nil)
+            ) {
+                Button("Delete", role: .destructive) {
+                    if let group = groupPendingDelete {
+                        for t in group.value { modelContext.delete(t) }
+                    }
+                    groupPendingDelete = nil
+                }
+                Button("Cancel", role: .cancel) {
+                    groupPendingDelete = nil
+                }
+            } message: {
+                Text("This will permanently delete all \(groupPendingDelete?.value.count ?? 0) transactions for this month. This cannot be undone.")
             }
             .overlay {
                 if transactions.isEmpty {
