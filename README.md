@@ -6,10 +6,21 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
 
 ## Screenshots
 
+**Onboarding**
+
 <p float="left">
-  <img src="Screenshots/budgetcalc_dashboard.png" width="30%" />
-  <img src="Screenshots/budgetcalc_transactions.png" width="30%" />
-  <img src="Screenshots/budgetcalc_import.png" width="30%" />
+  <img src="Screenshots/BudgetCalc_NewUsers1.png" width="30%" />
+  <img src="Screenshots/BudgetCalc_NewUsers2.png" width="30%" />
+  <img src="Screenshots/BudgetCalc_NewUsers3.png" width="30%" />
+</p>
+
+**Dashboard, Transactions & Import**
+
+<p float="left">
+  <img src="Screenshots/BudgetCalc_DashboardHome.png" width="23%" />
+  <img src="Screenshots/BudgetCalc_Transactions.png" width="23%" />
+  <img src="Screenshots/BudgetCalc_DetailedScreen.png" width="23%" />
+  <img src="Screenshots/budgetcalc_import.png" width="23%" />
 </p>
 
 ---
@@ -121,9 +132,13 @@ BudgetCalc/
 └── ContentView.swift               # Tab bar root
 
 Screenshots/
-├── budgetcalc_dashboard.png
-├── budgetcalc_transactions.png
-└── budgetcalc_import.png
+├── BudgetCalc_NewUsers1.png        # Onboarding page 1
+├── BudgetCalc_NewUsers2.png        # Onboarding page 2
+├── BudgetCalc_NewUsers3.png        # Onboarding page 3
+├── BudgetCalc_DashboardHome.png    # Dashboard view
+├── BudgetCalc_Transactions.png     # Transactions list
+├── BudgetCalc_DetailedScreen.png   # Monthly detail view
+└── budgetcalc_import.png           # Import view
 
 Scripts/
 └── generate_fake_statement.py      # Generates a fake ECU-style PDF for testing
