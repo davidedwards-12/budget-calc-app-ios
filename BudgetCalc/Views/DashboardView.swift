@@ -153,17 +153,22 @@ struct DashboardView: View {
             // Legend
             VStack(spacing: 8) {
                 ForEach(categoryBreakdown, id: \.name) { item in
-                    HStack(spacing: 8) {
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(item.color)
-                            .frame(width: 12, height: 12)
-                        Text(item.name)
-                        Spacer()
-                        Text(item.total, format: .currency(code: "USD"))
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.primary)
+                    // Button/NavLink wrap around the HStack to go to 'CategoryDetailsView'
+                    NavigationLink() {
+                        CategoryDetailsView(month: selectedMonth, account: selectedAccount, category: item.name)
+                    } label: {
+                        HStack(spacing: 8) {
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(item.color)
+                                .frame(width: 12, height: 12)
+                            Text(item.name)
+                            Spacer()
+                            Text(item.total, format: .currency(code: "USD"))
+                                .fontWeight(.semibold)
+                        }
+                        .foregroundStyle(.primary)
                     }
-                    .font(.subheadline)
+                        .font(.subheadline)
                 }
             }
             
