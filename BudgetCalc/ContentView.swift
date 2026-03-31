@@ -3,14 +3,15 @@ import SwiftUI
 struct ContentView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @State private var selectedTab = 0
+    @State private var selectedBank = "All Banks"
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            DashboardView(selectedTab: $selectedTab)
+            DashboardView(selectedTab: $selectedTab, selectedBank: $selectedBank)
                 .tabItem { Label("Dashboard", systemImage: "chart.pie.fill") }
                 .tag(0)
 
-            TransactionsListView()
+            TransactionsListView(selectedBank: $selectedBank)
                 .tabItem { Label("Transactions", systemImage: "list.bullet") }
                 .tag(1)
 

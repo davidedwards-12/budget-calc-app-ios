@@ -3,6 +3,7 @@ import SwiftData
 
 struct CategoryDetailsView: View {
     let month: Date
+    let bank: String
     let account: String
     let category: String
     
@@ -19,10 +20,11 @@ struct CategoryDetailsView: View {
     private var filtered: [Transaction] {
         allTransactions.filter {
             calendar.isDate($0.date, equalTo: month, toGranularity: .month) &&
+            (bank == "All Banks" || $0.bankName == bank) &&
             (account == "All Accounts" || $0.accountName == account) &&
             (category == "Uncategorized" ? $0.category == nil :
             category == "Income" ? ($0.category?.name == "Income" || ($0.category == nil && $0.isIncome)) :
-            $0.category?.name == category || category == "All Categories") // "All Categories" is not necessarily needed
+            $0.category?.name == category || category == "All Categories")
         }
     }
     

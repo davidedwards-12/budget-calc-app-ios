@@ -4,6 +4,7 @@ import Charts
 
 struct DashboardView: View {
     @Binding var selectedTab: Int
+    @Binding var selectedBank: String
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
 
@@ -11,8 +12,16 @@ struct DashboardView: View {
     @State private var selectedAccount = "All Accounts"
     private let calendar = Calendar.current
 
+    private var availableBanks: [String] {
+        let names = Set(transactions.map(\.bankName)).filter { !$0.isEmpty }
+        return ["All Banks"] + names.sorted()
+    }
+
     private var availableAccounts: [String] {
-        let names = Set(transactions.map(\.accountName)).filter { !$0.isEmpty }
+        let names = Set(transactions
+            .filter { selectedBank == "All Banks" || $0.bankName == selectedBank }
+            .map(\.accountName))
+            .filter { !$0.isEmpty }
         return ["All Accounts"] + names.sorted()
     }
 
@@ -21,6 +30,7 @@ struct DashboardView: View {
     private var monthTransactions: [Transaction] {
         transactions.filter {
             calendar.isDate($0.date, equalTo: selectedMonth, toGranularity: .month) &&
+            (selectedBank == "All Banks" || $0.bankName == selectedBank) &&
             (selectedAccount == "All Accounts" || $0.accountName == selectedAccount)
         }
     }
@@ -85,14 +95,14 @@ struct DashboardView: View {
             }
             .navigationTitle("Dashboard")
             .toolbar {
-                if availableAccounts.count > 2 {
+                if availableBanks.count > 1 {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Picker("Account", selection: $selectedAccount) {
-                                ForEach(availableAccounts, id: \.self) { Text($0) }
+                            Picker("Bank", selection: $selectedBank) {
+                                ForEach(availableBanks, id: \.self) { Text($0) }
                             }
                         } label: {
-                            Label(selectedAccount == "All Accounts" ? "All Accounts" : selectedAccount,
+                            Label(selectedBank == "All Banks" ? "All Banks" : selectedBank,
                                   systemImage: "building.columns")
                                 .labelStyle(.titleAndIcon)
                         }
@@ -155,7 +165,7 @@ struct DashboardView: View {
                 ForEach(categoryBreakdown, id: \.name) { item in
                     // Button/NavLink wrap around the HStack to go to 'CategoryDetailsView'
                     NavigationLink() {
-                        CategoryDetailsView(month: selectedMonth, account: selectedAccount, category: item.name)
+                        CategoryDetailsView(month: selectedMonth, bank: selectedBank, account: selectedAccount, category: item.name)
                     } label: {
                         HStack(spacing: 8) {
                             RoundedRectangle(cornerRadius: 3)

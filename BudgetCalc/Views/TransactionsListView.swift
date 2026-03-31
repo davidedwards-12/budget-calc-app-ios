@@ -5,24 +5,34 @@ struct TransactionsListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
 
+    @Binding var selectedBank: String
     @State private var searchText = ""
     @State private var selectedAccount = "All Accounts"
     @State private var selectedTransaction: Transaction?
     @State private var groupPendingDelete: (key: String, value: [Transaction])?
 
+    private var availableBanks: [String] {
+        let names = Set(transactions.map(\.bankName)).filter { !$0.isEmpty }
+        return ["All Banks"] + names.sorted()
+    }
+
     private var availableAccounts: [String] {
-        let names = Set(transactions.map(\.accountName)).filter { !$0.isEmpty }
+        let names = Set(transactions
+            .filter { selectedBank == "All Banks" || $0.bankName == selectedBank }
+            .map(\.accountName))
+            .filter { !$0.isEmpty }
         return ["All Accounts"] + names.sorted()
     }
 
     private var filtered: [Transaction] {
         transactions.filter { t in
+            let matchesBank    = selectedBank == "All Banks" || t.bankName == selectedBank
             let matchesAccount = selectedAccount == "All Accounts" || t.accountName == selectedAccount
-            let matchesSearch = searchText.isEmpty ||
+            let matchesSearch  = searchText.isEmpty ||
                 t.transactionDescription.localizedCaseInsensitiveContains(searchText) ||
                 t.bankName.localizedCaseInsensitiveContains(searchText) ||
                 (t.category?.name.localizedCaseInsensitiveContains(searchText) ?? false)
-            return matchesAccount && matchesSearch
+            return matchesBank && matchesAccount && matchesSearch
         }
     }
 
@@ -79,14 +89,14 @@ struct TransactionsListView: View {
             .navigationTitle("Transactions")
             .searchable(text: $searchText, prompt: "Search transactions")
             .toolbar {
-                if availableAccounts.count > 2 {
+                if availableBanks.count > 1 {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
-                            Picker("Account", selection: $selectedAccount) {
-                                ForEach(availableAccounts, id: \.self) { Text($0) }
+                            Picker("Bank", selection: $selectedBank) {
+                                ForEach(availableBanks, id: \.self) { Text($0) }
                             }
                         } label: {
-                            Label(selectedAccount == "All Accounts" ? "All Accounts" : selectedAccount,
+                            Label(selectedBank == "All Banks" ? "All Banks" : selectedBank,
                                   systemImage: "building.columns")
                                 .labelStyle(.titleAndIcon)
                         }
