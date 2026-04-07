@@ -12,6 +12,7 @@
 		2DB18050F57631332A60ACCA /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD5C14A083C2B2E5F6302B1 /* CategoryPickerView.swift */; };
 		3CC123672F758A4B00D92CD7 /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC123662F758A4600D92CD7 /* DetailsView.swift */; };
 		3CC123692F7ABE1B00D92CD7 /* CategoryDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC123682F7ABE1200D92CD7 /* CategoryDetailsView.swift */; };
+		3CC1236B2F7D6F9B00D92CD7 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC1236A2F7D6F9600D92CD7 /* TrendsView.swift */; };
 		45FCEBC23901971B9D9E19E4 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B64F437278FCFCC0235855 /* Transaction.swift */; };
 		4A319D5CA84FFA44A404F7BD /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C49DDEAC710CC2C64608D46 /* Category.swift */; };
 		78D5844248CCA66D4603D1B7 /* TransactionsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD056E52B01B21E9F7F71F4F /* TransactionsListView.swift */; };
@@ -31,6 +32,7 @@
 		3BD5C14A083C2B2E5F6302B1 /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
 		3CC123662F758A4600D92CD7 /* DetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
 		3CC123682F7ABE1200D92CD7 /* CategoryDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryDetailsView.swift; sourceTree = "<group>"; };
+		3CC1236A2F7D6F9600D92CD7 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
 		66B64F437278FCFCC0235855 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		89CC5DF5862D0A13D5A7792D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B3F21A44C9D05E110A7CC002 /* AutoCategorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoCategorizer.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 		F6FA1AE67A03EC87A69CF8AA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3CC1236A2F7D6F9600D92CD7 /* TrendsView.swift */,
 				3CC123682F7ABE1200D92CD7 /* CategoryDetailsView.swift */,
 				3CC123662F758A4600D92CD7 /* DetailsView.swift */,
 				30386BB2C550EBADE27B80CC /* DashboardView.swift */,
@@ -204,6 +207,7 @@
 				FD9B7F9D94ADFCA1017B27F1 /* ImportView.swift in Sources */,
 				3CC123692F7ABE1B00D92CD7 /* CategoryDetailsView.swift in Sources */,
 				2DB18050F57631332A60ACCA /* CategoryPickerView.swift in Sources */,
+				3CC1236B2F7D6F9B00D92CD7 /* TrendsView.swift in Sources */,
 				C4E92A11D3B05F220B8DD003 /* OnboardingView.swift in Sources */,
 				8A9D53660C51133D0E7BB982 /* PDFParser.swift in Sources */,
 				B3F21A44C9D05E110A7CC001 /* AutoCategorizer.swift in Sources */,
@@ -224,6 +228,8 @@
 				DEVELOPMENT_TEAM = G5CXS68J4R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = StatementSense;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Access photos to import bank statement images.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -237,6 +243,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.budgetcalc.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -254,6 +263,8 @@
 				DEVELOPMENT_TEAM = G5CXS68J4R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = StatementSense;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Access photos to import bank statement images.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -267,6 +278,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.budgetcalc.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

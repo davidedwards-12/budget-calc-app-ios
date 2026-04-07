@@ -18,6 +18,10 @@ struct ContentView: View {
             ImportView()
                 .tabItem { Label("Import", systemImage: "square.and.arrow.down") }
                 .tag(2)
+            
+            TrendsView(selectedTab: $selectedTab, selectedBank: $selectedBank)
+                .tabItem { Label("Trends", systemImage: "chart.bar.fill") }
+                .tag(3)
         }
         .sheet(isPresented: .constant(!hasSeenOnboarding)) {
             OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
