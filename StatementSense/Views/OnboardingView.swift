@@ -23,6 +23,12 @@ struct OnboardingView: View {
             title: "Understand Your Spending",
             body: "See your income vs. expenses, savings rate, top merchants, and a full monthly breakdown — all updated instantly as you import statements."
         ),
+        OnboardingPage(
+            systemImage: "chart.bar.fill",
+            imageColor: .orange,
+            title: "Month-Over-Month Trends",
+            body: "Compare your spending month over month, see which categories are trending up or down, and spot where your money is going over time."
+        ),
     ]
 
     var body: some View {
@@ -107,4 +113,8 @@ private struct OnboardingPage {
     let imageColor: Color
     let title: String
     let body: String
+}
+
+#Preview {
+    OnboardingView(hasSeenOnboarding: .constant(false))
 }
