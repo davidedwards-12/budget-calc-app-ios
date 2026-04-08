@@ -181,7 +181,7 @@ struct ImportView: View {
         // Fetch categories synchronously (avoids @Query timing issue on first import)
         let categoryDescriptor = FetchDescriptor<Category>()
         let fetchedCategories = (try? modelContext.fetch(categoryDescriptor)) ?? []
-        let categoryMap = Dictionary(uniqueKeysWithValues: fetchedCategories.map { ($0.name, $0) })
+        let categoryMap = Dictionary(fetchedCategories.map { ($0.name, $0) }, uniquingKeysWith: { first, _ in first })
 
         // Build a fingerprint set from all existing transactions for duplicate detection
         let existingDescriptor = FetchDescriptor<Transaction>()

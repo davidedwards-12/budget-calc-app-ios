@@ -9,7 +9,6 @@ struct CategoryPickerView: View {
     let transaction: Transaction
 
     @State private var showingAddCategory = false
-    @State private var newCategoryName = ""
 
     var body: some View {
         NavigationStack {
@@ -45,34 +44,7 @@ struct CategoryPickerView: View {
                     }
                 }
 
-                // Category list
-                Section("Categories") {
-                    ForEach(categories) { cat in
-                        Button {
-                            transaction.category = cat
-                            dismiss()
-                        } label: {
-                            HStack(spacing: 12) {
-                                ZStack {
-                                    Circle()
-                                        .fill(cat.color.opacity(0.15))
-                                        .frame(width: 32, height: 32)
-                                    Image(systemName: cat.icon)
-                                        .foregroundStyle(cat.color)
-                                        .imageScale(.small)
-                                }
-                                Text(cat.name)
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                if transaction.category?.id == cat.id {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(.tint)
-                                        .fontWeight(.semibold)
-                                }
-                            }
-                        }
-                    }
-                }
+                categoryList
 
                 // Add new
                 Section {
@@ -90,25 +62,56 @@ struct CategoryPickerView: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .alert("New Category", isPresented: $showingAddCategory) {
-                TextField("Category name", text: $newCategoryName)
-                Button("Add") {
-                    let name = newCategoryName.trimmingCharacters(in: .whitespaces)
-                    if !name.isEmpty {
-                        modelContext.insert(Category(name: name))
-                    }
-                    newCategoryName = ""
-                }
-                Button("Cancel", role: .cancel) { newCategoryName = "" }
+            .sheet(isPresented: $showingAddCategory) {
+                AddCategoryView()
             }
-            .onAppear { seedCategoriesIfNeeded() }
+        }
+    }
+    
+    private var categoryList: some View {
+        let defaultNames = DefaultCategories.all.map { $0.0 }
+        let defaultCategories = categories.filter { defaultNames.contains($0.name) }
+        let customCategories = categories.filter { !defaultNames.contains($0.name) }
+
+        return Section("Categories") {
+            ForEach(defaultCategories) { cat in
+                categoryRow(cat)
+            }
+            ForEach(customCategories) { cat in
+                categoryRow(cat)
+            }
+            .onDelete { offsets in
+                for i in offsets {
+                    modelContext.delete(customCategories[i])
+                }
+            }
         }
     }
 
-    private func seedCategoriesIfNeeded() {
-        guard categories.isEmpty else { return }
-        for (name, colorHex, icon) in DefaultCategories.all {
-            modelContext.insert(Category(name: name, colorHex: colorHex, icon: icon))
+    private func categoryRow(_ cat: Category) -> some View {
+        Button {
+            transaction.category = cat
+            dismiss()
+        } label: {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(cat.color.opacity(0.15))
+                        .frame(width: 32, height: 32)
+                    Image(systemName: cat.icon)
+                        .foregroundStyle(cat.color)
+                        .imageScale(.small)
+                }
+                Text(cat.name)
+                    .foregroundStyle(.primary)
+                Spacer()
+                if transaction.category?.id == cat.id {
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.tint)
+                        .fontWeight(.semibold)
+                }
+            }
         }
     }
+
 }

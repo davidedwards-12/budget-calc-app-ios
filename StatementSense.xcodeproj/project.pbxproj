@@ -10,6 +10,7 @@
 		01EB8C1CCF4F2948D80EAF8C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89CC5DF5862D0A13D5A7792D /* Preview Assets.xcassets */; };
 		276368780279D2F237B86B82 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F7EDF09C090705D861F540 /* ContentView.swift */; };
 		2DB18050F57631332A60ACCA /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD5C14A083C2B2E5F6302B1 /* CategoryPickerView.swift */; };
+		3C1269802F86E82F0039BF35 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C12697F2F86E8280039BF35 /* AddCategoryView.swift */; };
 		3CC123672F758A4B00D92CD7 /* DetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC123662F758A4600D92CD7 /* DetailsView.swift */; };
 		3CC123692F7ABE1B00D92CD7 /* CategoryDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC123682F7ABE1200D92CD7 /* CategoryDetailsView.swift */; };
 		3CC1236B2F7D6F9B00D92CD7 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CC1236A2F7D6F9600D92CD7 /* TrendsView.swift */; };
@@ -30,6 +31,7 @@
 		2C49DDEAC710CC2C64608D46 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		30386BB2C550EBADE27B80CC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		3BD5C14A083C2B2E5F6302B1 /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
+		3C12697F2F86E8280039BF35 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
 		3CC123662F758A4600D92CD7 /* DetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsView.swift; sourceTree = "<group>"; };
 		3CC123682F7ABE1200D92CD7 /* CategoryDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryDetailsView.swift; sourceTree = "<group>"; };
 		3CC1236A2F7D6F9600D92CD7 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		F6FA1AE67A03EC87A69CF8AA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3C12697F2F86E8280039BF35 /* AddCategoryView.swift */,
 				3CC1236A2F7D6F9600D92CD7 /* TrendsView.swift */,
 				3CC123682F7ABE1200D92CD7 /* CategoryDetailsView.swift */,
 				3CC123662F758A4600D92CD7 /* DetailsView.swift */,
@@ -200,6 +203,7 @@
 				947FE702F21A050B81240295 /* StatementSenseApp.swift in Sources */,
 				276368780279D2F237B86B82 /* ContentView.swift in Sources */,
 				45FCEBC23901971B9D9E19E4 /* Transaction.swift in Sources */,
+				3C1269802F86E82F0039BF35 /* AddCategoryView.swift in Sources */,
 				4A319D5CA84FFA44A404F7BD /* Category.swift in Sources */,
 				7A1E341D27D0905C023E5FD7 /* DashboardView.swift in Sources */,
 				78D5844248CCA66D4603D1B7 /* TransactionsListView.swift in Sources */,
