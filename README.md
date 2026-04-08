@@ -1,4 +1,4 @@
-# BudgetCalc
+# StatementSense
 
 A native iOS app that lets you import bank statement PDFs and get a clear picture of where your money goes.
 
@@ -23,6 +23,12 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
   <img src="Screenshots/budgetcalc_import.png" width="23%" />
 </p>
 
+**Trends**
+
+<p float="left">
+  <img src="Screenshots/BudgetCalc_TrendsScreen.png" width="30%" />
+</p>
+
 ---
 
 ## Features
@@ -33,6 +39,7 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
 - **Breakdown by Category** — Visual chart showing spending and income split by category for any month
 - **Income vs. Expenses** — Summary cards showing total income, total expenses, and savings rate
 - **Monthly navigation** — Browse any past month with a simple picker
+- **Trends View** — Month-over-month spending comparison with stacked bar chart by category, income vs. expenses summary, and per-category trend indicators (↑↓ % change)
 
 ---
 
@@ -128,6 +135,7 @@ BudgetCalc/
 │   ├── DashboardView.swift         # Summary cards + breakdown by category chart
 │   ├── TransactionsListView.swift  # Full transaction list with category picker
 │   ├── ImportView.swift            # PDF import flow + account selection
+│   ├── TrendsView.swift            # Month-over-month spending trends + category breakdown
 │   └── CategoryPickerView.swift    # Sheet for manually tagging a transaction
 └── ContentView.swift               # Tab bar root
 
@@ -138,8 +146,9 @@ Screenshots/
 ├── BudgetCalc_DashboardHome.png    # Dashboard view
 ├── BudgetCalc_Transactions.png     # Transactions list
 ├── BudgetCalc_DetailedScreen.png   # Monthly detail view
-└── budgetcalc_import.png           # Import view
+├── budgetCalc_import.png           # Import view
+└── BudgetCalc_TrendsScreen.png     # Trends view
 
 Scripts/
-└── generate_fake_statement.py      # Generates a fake ECU-style PDF for testing
+└── generate_fake_statements.py     # Generates fake PDFs for testing (ECU, AMEX, Chase)
 ```
