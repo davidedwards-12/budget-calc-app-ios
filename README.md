@@ -9,24 +9,22 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
 **Onboarding**
 
 <p float="left">
-  <img src="Screenshots/BudgetCalc_NewUsers1.png" width="30%" />
-  <img src="Screenshots/BudgetCalc_NewUsers2.png" width="30%" />
-  <img src="Screenshots/BudgetCalc_NewUsers3.png" width="30%" />
+  <img src="Screenshots/BudgetCalc_NewUsers1.png" width="25%" />
+  <img src="Screenshots/BudgetCalc_NewUsers2.png" width="25%" />
+  <img src="Screenshots/BudgetCalc_NewUsers3.png" width="25%" />
 </p>
 
-**Dashboard, Transactions & Import**
+**Dashboard, Transactions, Import & Trends**
 
 <p float="left">
-  <img src="Screenshots/BudgetCalc_DashboardHome.png" width="23%" />
-  <img src="Screenshots/budgetcalc_transactions.png" width="23%" />
-  <img src="Screenshots/BudgetCalc_DetailedScreen.png" width="23%" />
-  <img src="Screenshots/budgetcalc_import.png" width="23%" />
+  <img src="Screenshots/BudgetCalc_DashboardHome.png" width="25%" />
+  <img src="Screenshots/budgetcalc_transactions.png" width="25%" />
+  <img src="Screenshots/BudgetCalc_DetailedScreen.png" width="25%" />
 </p>
 
-**Trends**
-
 <p float="left">
-  <img src="Screenshots/BudgetCalc_TrendsScreen.png" width="30%" />
+  <img src="Screenshots/budgetcalc_import.png" width="25%" />
+  <img src="Screenshots/BudgetCalc_TrendsScreen.png" width="25%" />
 </p>
 
 ---
@@ -61,7 +59,7 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
 
 2. Open in Xcode
    ```bash
-   open BudgetCalc.xcodeproj
+   open StatementSense.xcodeproj
    ```
 
 3. Select a simulator or your device from the toolbar and press **Cmd+R**
@@ -72,7 +70,7 @@ A native iOS app that lets you import bank statement PDFs and get a clear pictur
 
 ## Running on a Personal Device
 
-1. In Xcode go to **BudgetCalc target → Signing & Capabilities**
+1. In Xcode go to **StatementSense target → Signing & Capabilities**
 2. Check **Automatically manage signing** and select your Apple ID as the Team
 3. Connect your iPhone, select it from the device dropdown, and press **Cmd+R**
 4. First launch: go to **Settings → General → VPN & Device Management** and trust your developer certificate
@@ -124,7 +122,7 @@ All data is stored **on-device** using SwiftData. Nothing is sent to any server.
 ## Project Structure
 
 ```
-BudgetCalc/
+StatementSense/
 ├── Models/
 │   ├── Transaction.swift           # SwiftData model for a single transaction
 │   └── Category.swift              # SwiftData model + default category seeds

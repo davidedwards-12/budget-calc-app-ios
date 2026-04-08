@@ -132,7 +132,7 @@ struct TrendsView: View {
                             AxisGridLine()
                         }
                     }
-                    
+                    // Call the subviews
                     summaryCards
                     categoryBreakdown
                 }
