@@ -3,9 +3,7 @@ import SwiftData
 import Charts
 
 struct TrendsView: View {
-    @Binding var selectedTab: Int
     @Binding var selectedBank: String
-    @Environment(\.modelContext) private var modelContext
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
     
     @State private var selectedAccount = "All Accounts"
@@ -107,51 +105,62 @@ struct TrendsView: View {
                         }
                         .pickerStyle(.segmented)
                     }
-
-
-                    Chart(monthlyData, id: \.month) { item in
-                        ForEach(item.categories, id: \.name) { category in
-                            BarMark(
-                                x: .value("Month", item.month, unit: .month),
-                                y: .value("Amount", category.total)
-                            )
-                            .foregroundStyle(by: .value("Category", category.name))
-                            .cornerRadius(4)
-                        }
-                    }
-                    .frame(height: 180)
-                    .chartXAxis {
-                        AxisMarks(values: .stride(by: .month)) { value in
-                            AxisValueLabel(format: .dateTime.month(.abbreviated))
-                            AxisGridLine()
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { value in
-                            AxisValueLabel(format: .currency(code: "USD").precision(.fractionLength(0)))
-                            AxisGridLine()
-                        }
-                    }
-                    // Call the subviews
-                    summaryCards
-                    categoryBreakdown
-                }
-                .padding()
-                .navigationTitle("Trends")
-                .toolbar {
-                    if availableBanks.count > 1 {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Menu {
-                                Picker("Bank", selection: $selectedBank) {
-                                    ForEach(availableBanks, id: \.self) { Text($0) }
-                                }
-                            } label: {
-                                Label(selectedBank == "All Banks" ? "All Banks" : selectedBank,
-                                      systemImage: "building.columns")
-                                    .labelStyle(.titleAndIcon)
+                    
+                    if (!transactions.isEmpty)
+                    {
+                        Chart(monthlyData, id: \.month) { item in
+                            ForEach(item.categories, id: \.name) { category in
+                                BarMark(
+                                    x: .value("Month", item.month, unit: .month),
+                                    y: .value("Amount", category.total)
+                                )
+                                .foregroundStyle(by: .value("Category", category.name))
+                                .cornerRadius(4)
                             }
                         }
+                        .frame(height: 180)
+                        .chartXAxis {
+                            AxisMarks(values: .stride(by: .month)) { value in
+                                AxisValueLabel(format: .dateTime.month(.abbreviated))
+                                AxisGridLine()
+                            }
+                        }
+                        .chartYAxis {
+                            AxisMarks { value in
+                                AxisValueLabel(format: .currency(code: "USD").precision(.fractionLength(0)))
+                                AxisGridLine()
+                            }
+                        }
+                        // Call the subviews
+                        summaryCards
+                        categoryBreakdown
                     }
+                }
+                .padding()
+            }
+            .navigationTitle("Trends")
+            .toolbar {
+                if availableBanks.count > 1 {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Picker("Bank", selection: $selectedBank) {
+                                ForEach(availableBanks, id: \.self) { Text($0) }
+                            }
+                        } label: {
+                            Label(selectedBank == "All Banks" ? "All Banks" : selectedBank,
+                                  systemImage: "building.columns")
+                            .labelStyle(.titleAndIcon)
+                        }
+                    }
+                }
+            }
+            .overlay {
+                if transactions.isEmpty {
+                    ContentUnavailableView(
+                        "No Transactions",
+                        systemImage: "chart.bar",
+                        description: Text("Import a bank statement to see your spending trends.")
+                    )
                 }
             }
         }

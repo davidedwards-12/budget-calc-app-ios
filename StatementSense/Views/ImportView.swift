@@ -5,6 +5,7 @@ import UniformTypeIdentifiers
 struct ImportView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var categories: [Category]
+    @Query private var transactions: [Transaction]
 
     @State private var bankName = ""
     @State private var isPickerPresented = false
@@ -14,6 +15,11 @@ struct ImportView: View {
     @State private var showSuccess = false
     @State private var importedCount = 0
     @State private var skippedCount = 0
+    
+    private var previousBanks: [String] {
+        let names = Set(transactions.map(\.bankName)).filter { !$0.isEmpty }
+        return names.sorted()
+    }
 
     var body: some View {
         NavigationStack {
@@ -71,6 +77,19 @@ struct ImportView: View {
             TextField("Bank name (e.g. AMEX, Chase, Citi, etc.)", text: $bankName)
                 .textFieldStyle(.roundedBorder)
                 .autocorrectionDisabled()
+            if !previousBanks.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(previousBanks, id: \.self) { name in
+                            Button(name) {
+                                bankName = name
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+                    }
+                }
+            }
 
             Button {
                 isPickerPresented = true

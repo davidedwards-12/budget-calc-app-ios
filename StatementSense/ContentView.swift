@@ -19,7 +19,7 @@ struct ContentView: View {
                 .tabItem { Label("Import", systemImage: "square.and.arrow.down") }
                 .tag(2)
             
-            TrendsView(selectedTab: $selectedTab, selectedBank: $selectedBank)
+            TrendsView(selectedBank: $selectedBank)
                 .tabItem { Label("Trends", systemImage: "chart.bar.fill") }
                 .tag(3)
         }
