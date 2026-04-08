@@ -8,7 +8,7 @@ struct OnboardingView: View {
         OnboardingPage(
             systemImage: "doc.richtext.fill",
             imageColor: .blue,
-            title: "Welcome to BudgetCalc",
+            title: "Welcome to StatementSense",
             body: "Import your bank statements and get a clear picture of where your money goes — all on your device, nothing sent to the cloud."
         ),
         OnboardingPage(

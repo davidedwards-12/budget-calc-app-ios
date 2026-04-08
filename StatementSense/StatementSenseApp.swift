@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct BudgetCalcApp: App {
+struct StatementSenseApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
